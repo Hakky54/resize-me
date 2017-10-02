@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.111"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.altindag.resizeme.presentation.image.ImagePresenter">
+    <bottom>
+        <VBox spacing="8.0">
+            <children>
+                <Separator prefWidth="200.0"/>
+                <GridPane hgap="8.0" vgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <Label text="Width"/>
+                        <Label text="Height" GridPane.columnIndex="1"/>
+                        <Label text="Percentage" GridPane.columnIndex="2"/>
+                        <TextField fx:id="widthField" prefWidth="100.0" text="width" GridPane.rowIndex="1"/>
+                        <TextField fx:id="heightField" prefWidth="100.0" text="height" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1"/>
+                        <TextField fx:id="percentageField" prefWidth="100.0" text="100%" GridPane.columnIndex="2"
+                                   GridPane.rowIndex="1"/>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#selectImage"
+                                fx:id="imageChooser" text="Select image" GridPane.columnIndex="1"
+                                GridPane.rowIndex="2"/>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#convertImage"
+                                text="Convert" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetImage"
+                                text="Reset" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    </children>
+                </GridPane>
+            </children>
+        </VBox>
+    </bottom>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+    <center>
+        <ImageView fx:id="imageView" fitHeight="400.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true"
+                   BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="10.0"/>
+            </BorderPane.margin>
+        </ImageView>
+    </center>
+</BorderPane>
