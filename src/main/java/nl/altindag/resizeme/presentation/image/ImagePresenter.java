@@ -9,9 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import nl.altindag.resizeme.service.FileChooserService;
 import nl.altindag.resizeme.service.ImageService;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
@@ -101,18 +104,52 @@ public class ImagePresenter implements Initializable {
         fileChooserService.get(new Stage())
                 .ifPresent(image -> {
                     imageView.setImage(new Image(image.toURI().toString()));
-
-                    width.set(decimalFormat.format(Double.valueOf(imageView.getImage().getWidth())));
-                    height.set(decimalFormat.format(Double.valueOf(imageView.getImage().getHeight())));
-                    percentage.set("100.0");
+                    calculateResolution();
                 });
     }
 
     @FXML
     public void resetImage(ActionEvent event) {
-        width.set(String.valueOf(imageView.getImage().getWidth()));
-        height.set(String.valueOf(imageView.getImage().getHeight()));
-        percentage.set("100.0");
+        if (imageView.getImage() == null) {
+            width.set(null);
+            height.set(null);
+            percentage.set(null);
+        } else {
+            width.set(String.valueOf(imageView.getImage().getWidth()));
+            height.set(String.valueOf(imageView.getImage().getHeight()));
+            percentage.set("100.0");
+        }
     }
 
+    @FXML
+    public void handleDragOver(DragEvent event) {
+        if (event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.ANY);
+        }
+    }
+
+    @FXML
+    public void handleDropped(DragEvent event) {
+        event.getDragboard().getFiles().stream()
+                .filter(file -> {
+                    String extention = FilenameUtils.getExtension(file.getName()).toLowerCase();
+                    if (extention.equals("jpg") || extention.equals("png")) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+                .findFirst()
+                .ifPresent(file -> {
+                    imageView.setImage(new Image(file.toURI().toString()));
+                    calculateResolution();
+                });
+
+    }
+
+    private void calculateResolution() {
+        width.set(decimalFormat.format(Double.valueOf(imageView.getImage().getWidth())));
+        height.set(decimalFormat.format(Double.valueOf(imageView.getImage().getHeight())));
+        percentage.set("100.0");
+    }
 }

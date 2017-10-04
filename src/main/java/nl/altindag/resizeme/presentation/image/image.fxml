@@ -47,7 +47,7 @@
     </padding>
     <center>
         <ImageView fx:id="imageView" fitHeight="400.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true"
-                   BorderPane.alignment="CENTER">
+                   BorderPane.alignment="CENTER" onDragOver="#handleDragOver" onDragDropped="#handleDropped">
             <BorderPane.margin>
                 <Insets bottom="10.0"/>
             </BorderPane.margin>

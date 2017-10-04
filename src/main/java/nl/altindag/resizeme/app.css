@@ -1,3 +1,31 @@
 .text-field {
     -fx-alignment: center;
 }
+
+.root {
+    -fx-background-color: gray;
+}
+
+.button {
+    -fx-background-color: darkgrey;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+}
+
+.button:pressed:hover {
+    -fx-scale-y: 0.9;
+    -fx-scale-x: 0.9;
+}
+
+.button:hover {
+    -fx-background-color: #383838;
+    -fx-scale-y: 1.1;
+}
+
+.label {
+    -fx-text-fill: white;
+}
+
+.separator {
+    -fx-background-color: gray;
+}

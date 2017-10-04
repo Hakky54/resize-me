@@ -17,7 +17,8 @@ public class FileChooserService {
     @PostConstruct
     private void init() {
         fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("JPEG", "*.jpg"));
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("JPEG image", "*.jpg")
+                , new ExtensionFilter("PNG image", "*.png"));
         fileChooser.initialDirectoryProperty().bindBidirectional(lastKnownLocation);
     }
 
