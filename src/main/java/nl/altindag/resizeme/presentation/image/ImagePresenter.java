@@ -11,13 +11,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
-import javafx.stage.Stage;
 import nl.altindag.resizeme.service.FileChooserService;
 import nl.altindag.resizeme.service.ImageService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 public class ImagePresenter implements Initializable {
 
@@ -89,23 +90,14 @@ public class ImagePresenter implements Initializable {
             return;
         }
 
-        fileChooserService.save(new Stage())
-                .ifPresent(path -> {
-                    try {
-                        IOUtils.copy(imageService.compress(imageView.getImage(), Double.valueOf(width.getValue())), new FileOutputStream(path));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                });
+        fileChooserService.saveFile()
+                .ifPresent(this::writeFile);
     }
 
     @FXML
     public void selectImage(ActionEvent event) {
-        fileChooserService.get(new Stage())
-                .ifPresent(image -> {
-                    imageView.setImage(new Image(image.toURI().toString()));
-                    calculateResolution();
-                });
+        fileChooserService.getFile()
+                .ifPresent(this::displayImage);
     }
 
     @FXML
@@ -114,11 +106,12 @@ public class ImagePresenter implements Initializable {
             width.set(null);
             height.set(null);
             percentage.set(null);
-        } else {
-            width.set(String.valueOf(imageView.getImage().getWidth()));
-            height.set(String.valueOf(imageView.getImage().getHeight()));
-            percentage.set("100.0");
+            return;
         }
+
+        width.set(String.valueOf(imageView.getImage().getWidth()));
+        height.set(String.valueOf(imageView.getImage().getHeight()));
+        percentage.set("100.0");
     }
 
     @FXML
@@ -131,20 +124,27 @@ public class ImagePresenter implements Initializable {
     @FXML
     public void handleDropped(DragEvent event) {
         event.getDragboard().getFiles().stream()
-                .filter(file -> {
-                    String extention = FilenameUtils.getExtension(file.getName()).toLowerCase();
-                    if (extention.equals("jpg") || extention.equals("png")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                })
+                .filter(file -> isValidImage(file, extension -> extension.equals("jpg") || extension.equals("png")))
                 .findFirst()
-                .ifPresent(file -> {
-                    imageView.setImage(new Image(file.toURI().toString()));
-                    calculateResolution();
-                });
+                .ifPresent(this::displayImage);
+    }
 
+    private void writeFile(File path) {
+        try {
+            IOUtils.copy(imageService.compress(imageView.getImage(), Double.valueOf(width.getValue())), new FileOutputStream(path));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    private void displayImage(File file) {
+        imageView.setImage(new Image(file.toURI().toString()));
+        calculateResolution();
+    }
+
+    private static boolean isValidImage(File file, Predicate<String> extensionFilter) {
+        String extension = FilenameUtils.getExtension(file.getName().toLowerCase());
+        return extensionFilter.test(extension);
     }
 
     private void calculateResolution() {

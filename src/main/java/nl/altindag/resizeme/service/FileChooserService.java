@@ -8,28 +8,31 @@ import javafx.stage.Stage;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class FileChooserService {
 
     FileChooser fileChooser;
     private static SimpleObjectProperty<File> lastKnownLocation = new SimpleObjectProperty<>();
+    private static Supplier<Stage> stageSupplier = Stage::new;
 
     @PostConstruct
     private void init() {
         fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("JPEG image", "*.jpg")
-                , new ExtensionFilter("PNG image", "*.png"));
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("JPEG image", "*.jpg"),
+                new ExtensionFilter("PNG image", "*.png"));
         fileChooser.initialDirectoryProperty().bindBidirectional(lastKnownLocation);
     }
 
-    public Optional<File> get(Stage stage) {
-        Optional<File> file = Optional.ofNullable(fileChooser.showOpenDialog(stage));
+    public Optional<File> getFile() {
+        Optional<File> file = Optional.ofNullable(fileChooser.showOpenDialog(stageSupplier.get()));
         file.ifPresent(this::setLastKnowLocation);
         return file;
     }
 
-    public Optional<File> save(Stage stage) {
-        Optional<File> file = Optional.ofNullable(fileChooser.showSaveDialog(stage));
+    public Optional<File> saveFile() {
+        Optional<File> file = Optional.ofNullable(fileChooser.showSaveDialog(stageSupplier.get()));
         file.ifPresent(this::setLastKnowLocation);
         return file;
     }
