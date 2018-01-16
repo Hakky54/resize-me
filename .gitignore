@@ -49,6 +49,7 @@ hs_err_pid*
 # IntelliJ
 /out/
 .idea/*
+*.iml
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -62,8 +63,3 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 .DS_Store
-BouwkundigeKeuring.iml
-src/.DS_Store
-src/main/.DS_Store
-.idea/
-resize-me.iml
