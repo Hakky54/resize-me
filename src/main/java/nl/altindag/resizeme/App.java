@@ -8,7 +8,7 @@ import nl.altindag.resizeme.presentation.image.ImageView;
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         ImageView imageView = new ImageView();
 
         Scene scene = new Scene(imageView.getView());
