@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>13.0.1</javafx.version>
+        <javafx.version>13.0.2</javafx.version>
         <commons.io.version>2.6</commons.io.version>
         <afterburner.version>1.7.0</afterburner.version>
         <image.scaling.version>0.8.6</image.scaling.version>
