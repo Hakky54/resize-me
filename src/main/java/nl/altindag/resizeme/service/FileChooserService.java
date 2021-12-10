@@ -24,13 +24,13 @@ public class FileChooserService {
     }
 
     public Optional<File> getFile() {
-        Optional<File> file = Optional.ofNullable(fileChooser.showOpenDialog(stageSupplier.get()));
+        var file = Optional.ofNullable(fileChooser.showOpenDialog(stageSupplier.get()));
         file.ifPresent(this::setLastKnowLocation);
         return file;
     }
 
     public Optional<File> saveFile() {
-        Optional<File> file = Optional.ofNullable(fileChooser.showSaveDialog(stageSupplier.get()));
+        var file = Optional.ofNullable(fileChooser.showSaveDialog(stageSupplier.get()));
         file.ifPresent(this::setLastKnowLocation);
         return file;
     }

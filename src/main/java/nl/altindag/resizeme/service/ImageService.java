@@ -19,23 +19,18 @@ public class ImageService {
         return compress(SwingFXUtils.fromFXImage(image, null), width);
     }
 
-    public InputStream compress(final File file, double width) throws IOException {
-        return compress(ImageIO.read(file), width);
-    }
-
     public InputStream compress(BufferedImage bufferedImage, Double width) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        var outputStream = new ByteArrayOutputStream();
 
-        BufferedImage originalImage = bufferedImage;
-        double originalWidth = originalImage.getWidth();
-        double originalHeight = originalImage.getHeight();
+        double originalWidth = bufferedImage.getWidth();
+        double originalHeight = bufferedImage.getHeight();
 
         width = width == 0 ? originalWidth : width;
         Double height = originalHeight * width / originalWidth;
 
         ResampleOp resizeOp = new ResampleOp(width.intValue(), height.intValue());
 
-        BufferedImage resizedImage = resizeOp.filter(originalImage, null);
+        BufferedImage resizedImage = resizeOp.filter(bufferedImage, null);
         ImageIO.write(resizedImage, "jpg", outputStream);
         return new ByteArrayInputStream(outputStream.toByteArray());
     }

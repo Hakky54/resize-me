@@ -14,13 +14,13 @@ import javafx.scene.input.TransferMode;
 import nl.altindag.resizeme.service.FileChooserService;
 import nl.altindag.resizeme.service.ImageService;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -40,12 +40,11 @@ public class ImagePresenter implements Initializable {
     @FXML
     private ImageView imageView;
 
-    private SimpleStringProperty width = new SimpleStringProperty();
-    private SimpleStringProperty height = new SimpleStringProperty();
-    private SimpleStringProperty percentage = new SimpleStringProperty();
+    private final SimpleStringProperty width = new SimpleStringProperty();
+    private final SimpleStringProperty height = new SimpleStringProperty();
+    private final SimpleStringProperty percentage = new SimpleStringProperty();
 
-    private String pattern = "###.#";
-    private DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
+    private final DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 
     @Inject
     private FileChooserService fileChooserService;
@@ -54,6 +53,7 @@ public class ImagePresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        var pattern = "###.#";
         decimalFormat.applyPattern(pattern);
         Platform.runLater(() -> imageChooser.requestFocus());
 
@@ -63,20 +63,20 @@ public class ImagePresenter implements Initializable {
 
         widthField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (imageView.getImage() != null && !newValue.isEmpty() && !heightField.isFocused() && !percentageField.isFocused()) {
-                height.set(String.valueOf(decimalFormat.format(imageService.calculateHeight(imageView.getImage(), Double.valueOf(newValue)))));
-                percentage.set(String.valueOf(decimalFormat.format(Double.valueOf(height.getValue()) / imageView.getImage().getHeight() * 100)));
+                height.set(String.valueOf(decimalFormat.format(imageService.calculateHeight(imageView.getImage(), Double.parseDouble(newValue)))));
+                percentage.set(String.valueOf(decimalFormat.format(Double.parseDouble(height.getValue()) / imageView.getImage().getHeight() * 100)));
             }
         });
 
         heightField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (imageView.getImage() != null && !newValue.isEmpty() && !widthField.isFocused() && !percentageField.isFocused()) {
-                width.set(String.valueOf(decimalFormat.format(imageService.calculateWidth(imageView.getImage(), Double.valueOf(newValue)))));
-                percentage.set(String.valueOf(decimalFormat.format(Double.valueOf(width.getValue()) / imageView.getImage().getWidth() * 100)));
+                width.set(String.valueOf(decimalFormat.format(imageService.calculateWidth(imageView.getImage(), Double.parseDouble(newValue)))));
+                percentage.set(String.valueOf(decimalFormat.format(Double.parseDouble(width.getValue()) / imageView.getImage().getWidth() * 100)));
             }
         });
 
         percentageField.textProperty().addListener((observable, oldValue, newValue) -> {
-            double pct = newValue.isEmpty() ? 0 : Double.valueOf(newValue);
+            double pct = newValue.isEmpty() ? 0 : Double.parseDouble(newValue);
             if (imageView.getImage() != null && pct > 0 && !widthField.isFocused() && !heightField.isFocused()) {
                 width.set(String.valueOf(decimalFormat.format(imageService.calculateWidth(imageView.getImage(), imageView.getImage().getHeight() * (pct / 100)))));
                 height.set(String.valueOf(decimalFormat.format(imageService.calculateHeight(imageView.getImage(), imageView.getImage().getWidth() * (pct / 100)))));
@@ -124,16 +124,16 @@ public class ImagePresenter implements Initializable {
     @FXML
     public void handleDropped(DragEvent event) {
         event.getDragboard().getFiles().stream()
-                .filter(file -> isValidImage(file, extension -> extension.equals("jpg") || extension.equals("png")))
+                .filter(file -> isValidImage(file, extension -> extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png")))
                 .findFirst()
                 .ifPresent(this::displayImage);
     }
 
-    private void writeFile(File path) {
-        try {
-            IOUtils.copy(imageService.compress(imageView.getImage(), Double.valueOf(width.getValue())), new FileOutputStream(path));
-        } catch (IOException e1) {
-            e1.printStackTrace();
+    private void writeFile(File file) {
+        try(var image = imageService.compress(imageView.getImage(), Double.parseDouble(width.getValue()))) {
+            Files.copy(image, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -143,7 +143,7 @@ public class ImagePresenter implements Initializable {
     }
 
     private static boolean isValidImage(File file, Predicate<String> extensionFilter) {
-        String extension = FilenameUtils.getExtension(file.getName().toLowerCase());
+        var extension = FilenameUtils.getExtension(file.getName().toLowerCase());
         return extensionFilter.test(extension);
     }
 

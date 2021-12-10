@@ -2,7 +2,7 @@
 This is a image resize and compression tool which can easily resize your image based on width, height or percentage.
 
 **Required to have:**
-1. Java 11
+1. Java 17
 2. Maven
 
 **How to start**
