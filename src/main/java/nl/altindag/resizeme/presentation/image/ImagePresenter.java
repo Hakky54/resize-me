@@ -53,8 +53,7 @@ public class ImagePresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        var pattern = "###.#";
-        decimalFormat.applyPattern(pattern);
+        decimalFormat.applyPattern("###.#");
         Platform.runLater(() -> imageChooser.requestFocus());
 
         widthField.textProperty().bindBidirectional(width);
