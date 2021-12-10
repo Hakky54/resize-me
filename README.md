@@ -1,5 +1,5 @@
 # Resize me
-This is a image resize and compression tool which can easily resize your image based on width, height or percentage.
+This is an image resize and compression tool which can easily resize your image based on width, height or percentage.
 
 **Required to have:**
 1. Java 17
