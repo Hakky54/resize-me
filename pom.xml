@@ -143,6 +143,7 @@ limitations under the License.
                         <exclude>**/*.md</exclude>
                         <exclude>**/*.xml</exclude>
                         <exclude>**/*.yml</exclude>
+                        <exclude>**/*.css</exclude>
                     </excludes>
                     <strictCheck>true</strictCheck>
                     <mapping>
