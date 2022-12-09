@@ -14,4 +14,4 @@ This is an image resize and compression tool which can easily resize your image 
 
 ### How to start
 1. `mvn clean verify`
-2. `mvn exec:jara`
+2. `mvn exec:java`
